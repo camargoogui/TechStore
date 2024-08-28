@@ -1,2 +1,4 @@
-package enums;public class CategoriaProduto {
+package enums;
+
+public class CategoriaProduto {
 }
