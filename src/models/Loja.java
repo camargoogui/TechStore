@@ -27,3 +27,4 @@ public class Loja {
         this.produtos = produtos;
     }
 }
+
