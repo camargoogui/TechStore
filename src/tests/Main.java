@@ -2,8 +2,10 @@ package tests;
 
 import repository.IProduto;
 import models.Produto;
+import models.Loja;
 import enums.CategoriaProduto;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
@@ -21,6 +23,10 @@ public class Main {
             System.out.println("| 3 - Buscar Produto por ID      |");
             System.out.println("| 4 - Alterar Produto            |");
             System.out.println("| 5 - Excluir Produto            |");
+            System.out.println("| 6 - Buscar Produto por Nome    |");
+            System.out.println("| 7 - Lojas com Produto          |");
+            System.out.println("| 8 - Adicionar Loja             |");
+            System.out.println("| 9 - Adicionar Produto à Loja   |");
             System.out.println("==================================");
             System.out.print("Escolha uma opção: ");
             String opcao = leitor.nextLine().trim();
@@ -55,6 +61,22 @@ public class Main {
                     String idExcluir = leitor.nextLine().trim();
                     IProduto.deleteProduto(idExcluir);
                     break;
+                case "6":
+                    System.out.print("Digite o nome do produto que deseja buscar: ");
+                    String nomeBusca = leitor.nextLine().trim();
+                    IProduto.collectProdutoByNome(nomeBusca);
+                    break;
+                case "7":
+                    System.out.print("Digite o nome do produto para verificar as lojas que o possuem: ");
+                    String nomeProduto = leitor.nextLine().trim();
+                    IProduto.lojasComProduto(nomeProduto);
+                    break;
+                case "8":
+                    addLoja();
+                    break;
+                case "9":
+                    addProdutoToLoja();
+                    break;
                 default:
                     System.out.println("Opção inválida.");
                     break;
@@ -65,10 +87,10 @@ public class Main {
     private static void addProduto() {
         Scanner leitor = new Scanner(System.in);
         System.out.print("Digite o código do produto: ");
-        String nome = leitor.nextLine().trim();
+        String codigo = leitor.nextLine().trim();
 
         System.out.print("Digite o nome do produto: ");
-        String descricao = leitor.nextLine().trim();
+        String nome = leitor.nextLine().trim();
 
         System.out.println("Escolha a categoria do produto:");
         CategoriaProduto[] categorias = CategoriaProduto.values();
@@ -82,8 +104,35 @@ public class Main {
         System.out.print("Digite o preço do produto: ");
         double preco = Double.parseDouble(leitor.nextLine().trim());
 
-        Produto produto = new Produto(nome, descricao, preco, categoria);
+        Produto produto = new Produto(codigo, nome, preco, categoria);
         IProduto.addProduto(produto);
         System.out.println("Produto adicionado com sucesso!");
+    }
+
+    private static void addLoja() {
+        Scanner leitor = new Scanner(System.in);
+        System.out.print("Digite o nome da loja: ");
+        String nomeLoja = leitor.nextLine().trim();
+
+        Loja loja = new Loja(nomeLoja, new ArrayList<>());
+        IProduto.addLoja(loja);
+    }
+
+    private static void addProdutoToLoja() {
+        Scanner leitor = new Scanner(System.in);
+        IProduto.showLojas();
+        System.out.print("Digite o nome da loja: ");
+        String nomeLoja = leitor.nextLine().trim();
+
+        IProduto.showProducts();
+        System.out.print("Digite o ID do produto que deseja adicionar à loja: ");
+        String idProduto = leitor.nextLine().trim();
+
+        Produto produto = IProduto.findProdutoById(idProduto);
+        if (produto != null) {
+            IProduto.addProdutoToLoja(nomeLoja, produto);
+        } else {
+            System.out.println("Produto não encontrado.");
+        }
     }
 }
